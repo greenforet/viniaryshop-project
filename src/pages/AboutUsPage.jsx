@@ -78,7 +78,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 50px;
+  padding-top: 40px;
 `;
 
 const CategoryTitle = styled.div`
