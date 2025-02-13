@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import LogoImage from "../images/ViniaryLogo.png";
 import CircleImage from "../images/Circle.png";
 
-const Header = () => {
+const Header = ({ onDropdownChange }) => {
+  const [isWinesOpen, setIsWinesOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (onDropdownChange) {
+      onDropdownChange(isWinesOpen || isWishlistOpen);
+    }
+  }, [isWinesOpen, isWishlistOpen, onDropdownChange]);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -32,9 +40,12 @@ const Header = () => {
       />
       <HeaderList>
         <List onClick={handleAboutUsClick}>About us</List>
-        <WinesList>
+        <WinesList 
+          onMouseEnter={() => setIsWinesOpen(true)}
+          onMouseLeave={() => setIsWinesOpen(false)}
+        >
           <List>Wines</List>
-          <DropdownMenu>
+          <DropdownMenu isOpen={isWinesOpen}>
             <li>reds</li>
             <li>whites</li>
             <li>sparkling</li>

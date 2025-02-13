@@ -1,21 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Home = () => {
   return (
-    <Container>
+    <HomeContainer>
       <Header/>
-    </Container>
+      <Footer/>
+    </HomeContainer>
   );
 };
 
 export default Home;
 
-const Container = styled.div`
+const HomeContainer = styled.div`
   min-width: 1200px;
   width: 100vw;
   min-height: 100vh;
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
+  display: flex;         
+  flex-direction: column; 
 `;
