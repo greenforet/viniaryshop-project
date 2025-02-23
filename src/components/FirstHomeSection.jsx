@@ -87,6 +87,7 @@ const FirstMainSectionImage = styled.img`
   align-items: center;      
   flex: 1;                 
   object-fit: cover;  
+  border-radius: 50% 20% / 10% 40%;
 `;
 
 const CornerImageTop = styled.img`
