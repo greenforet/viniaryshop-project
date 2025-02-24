@@ -23,6 +23,11 @@ const Header = ({ onDropdownChange }) => {
     navigate('/aboutuspage');
   };
 
+  const handleWineClick = (wineType) => {
+    navigate('/winepage', { state: { type: wineType } });
+    setIsWinesOpen(false);
+  };
+
   const handleShopClick = () => {
     navigate('/shoppage');
   };
@@ -46,12 +51,12 @@ const Header = ({ onDropdownChange }) => {
         >
           <List>Wines</List>
           <DropdownMenu isOpen={isWinesOpen}>
-            <li>reds</li>
-            <li>whites</li>
-            <li>sparkling</li>
-            <li>rose</li>
-            <li>dessert</li>
-            <li>port</li>
+            <li onClick={() => handleWineClick('reds')}>reds</li>
+            <li onClick={() => handleWineClick('whites')}>whites</li>
+            <li onClick={() => handleWineClick('sparkling')}>sparkling</li>
+            <li onClick={() => handleWineClick('rose')}>rose</li>
+            <li onClick={() => handleWineClick('dessert')}>dessert</li>
+            <li onClick={() => handleWineClick('port')}>port</li>
           </DropdownMenu>
         </WinesList>
         <WishList>
