@@ -19,6 +19,10 @@ const WinePage = () => {
   const [currentCategory, setCurrentCategory] = useState('reds'); 
   const [isFixedHeaderVisible, setIsFixedHeaderVisible] = useState(false);
 
+  const handleDropdownChange = (isOpen) => {
+    setIsDropdownOpen(isOpen);
+  };
+
   const itemsPerPage = 30;
 
   useEffect(() => {
@@ -120,8 +124,7 @@ useEffect(() => {
     <Container ref={containerRef}>
       <WineDetailedPageContainer isDropdownOpen={isDropdownOpen}>
         <Header 
-          onMouseEnter={() => setIsDropdownOpen(true)}
-          onMouseLeave={() => setIsDropdownOpen(false)}
+          onDropdownChange={handleDropdownChange}
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
@@ -160,6 +163,7 @@ useEffect(() => {
             itemsPerPage={30}
             totalItems={wines.length}
             onItemClick={handleWineClick}
+            currentCategory={currentCategory}
           />
         </GridSection>
       </MainContent>
@@ -197,7 +201,7 @@ const WineDetailedPageContainer = styled.div`
   left: 0;
   width: 100%;
   height: ${props => props.isDropdownOpen ? '400px' : '130px'};
-  background-color: #93C6E7;
+  background-color: ##F2F0EA;
   transition: all 0.5s ease;
   opacity: ${props => props.isDropdownOpen ? 1 : 0};
   z-index: -1;
@@ -242,8 +246,8 @@ const CategoryTitle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 20px;
   padding-top: 20px;
+  padding-bottom: 20px;
   font-family: 'JacksonAmor', serif;
   margin-top: ${props => props.isDropdownOpen ? '400px' : '130px'};
   transition: margin-top 0.5s ease;
@@ -263,6 +267,8 @@ const CategoryTitle = styled.div`
     background-position: center;
     opacity: 0.6;
     z-index: -1;
+    transition: none; 
+    will-change: transform; 
   }
 `;
 
@@ -278,7 +284,7 @@ const MainContent = styled.div`
 const GridSection = styled.div`
   flex: 1;
   margin-left: 300px;  
-  margin-top: 100px;  
+  margin-top: 70px;  
 `;
 
 const SideBarWrapper = styled.div`

@@ -15,7 +15,7 @@ const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, total
   const toggleWishlist = (e, itemId) => {
     e.stopPropagation();
     setWishlist(prev => {
-      const wishlistItem = `${currentCategory}-${itemId}`;
+      const wishlistItem = `${currentCategory}-${itemId}`;  // 카테고리와 ID를 조합
       if (prev.includes(wishlistItem)) {
         return prev.filter(id => id !== wishlistItem);
       } else {
@@ -25,7 +25,8 @@ const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, total
   };
 
   const isItemWished = (itemId) => {
-    return wishlist.includes(`${currentCategory}-${itemId}`);
+    const wishlistItem = `${currentCategory}-${itemId}`;  // 카테고리와 ID를 조합
+    return wishlist.includes(wishlistItem);
   };
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);

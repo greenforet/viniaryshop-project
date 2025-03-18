@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 
-const ShopPage = () => {
+const WishListPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleDropdownChange = (isOpen) => {
@@ -17,7 +17,7 @@ const ShopPage = () => {
       <ContentWrapper>
         <CategoryTitle 
           isDropdownOpen={isDropdownOpen}>
-          Shop
+          Wish list
         </CategoryTitle>
       </ContentWrapper>
       </WineDetailedPageContainer>
@@ -25,7 +25,7 @@ const ShopPage = () => {
   );
 };
 
-export default ShopPage;
+export default WishListPage;
 
 const WineDetailedPageContainer = styled.div`
   min-width: 1200px; 

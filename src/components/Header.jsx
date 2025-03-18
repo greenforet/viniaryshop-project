@@ -55,6 +55,10 @@ const Header = ({ onDropdownChange, isFixed }) => {
     setIsWinesOpen(false);
   };
 
+  const handleWishListClick = () => {
+    navigate('/wishlistpage');
+  };
+
   const handleShopClick = () => {
     navigate('/shoppage');
   };
@@ -87,7 +91,7 @@ const Header = ({ onDropdownChange, isFixed }) => {
           </DropdownMenu>
         </WinesList>
         <WishList>
-          <List>Wish list</List>
+          <List onClick={handleWishListClick}>Wish list</List>
         </WishList>
         <List onClick={handleShopClick}>Shop</List>
       </HeaderList>

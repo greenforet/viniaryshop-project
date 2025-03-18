@@ -6,6 +6,7 @@ import WinePage from './pages/WinePage';
 import ShopPage from './pages/ShopPage';
 import TipsPage from './pages/TipsPage';
 import WineInfoPage from './pages/WineInfoPage';
+import WishListPage from './pages/WishListPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="aboutuspage" element={<AboutUsPage/>} />
         <Route path="winepage" element={<WinePage/>} />
         <Route path="/wineinfopage/:itemId" element={<WineInfoPage/>} />
+        <Route path="wishlistpage" element={<WishListPage/>} />
         <Route path="shoppage" element={<ShopPage/>} />
         <Route path="tipspage" element={<TipsPage/>} />
       </Routes>
