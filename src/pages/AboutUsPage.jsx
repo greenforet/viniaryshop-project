@@ -59,18 +59,18 @@ const WineDetailedPageContainer = styled.div`
   z-index: 3;
   background-color: #F2F0EA;
 
-  &::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: ${props => props.isDropdownOpen ? '480px' : '150px'};
-  background-color: #93C6E7;
-  transition: all 0.5s ease;
-  opacity: ${props => props.isDropdownOpen ? 1 : 0};
-  z-index: -1;
-}
+//   &::before {
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: ${props => props.isDropdownOpen ? '480px' : '150px'};
+//   background-color: #93C6E7;
+//   transition: all 0.5s ease;
+//   opacity: ${props => props.isDropdownOpen ? 1 : 0};
+//   z-index: -1;
+// }
 `;
 
 const ContentWrapper = styled.div`
@@ -92,32 +92,31 @@ const CategoryTitle = styled.div`
   margin-top: ${props => props.isDropdownOpen ? '400px' : '130px'};
   transition: all 0.5s ease;
   position: relative;
-  background: ${props => props.isDropdownOpen ? '#F2F0EA' : '#93C6E7'};
-  border-bottom: ${props => props.isDropdownOpen ? '1px solid gray' : 'none'};  // 추가
+  background: #93C6E7;
   z-index: 1; 
 
-  // 상단 웨이브 라인
-  &::before {
-    content: '';
-    position: absolute;
-    top: -37px;
-    left: 0;
-    width: 100%;
-    height: 75px;
-    opacity: ${props => props.isDropdownOpen ? 1 : 0};
-    transition: all 0.5s ease;
-    background: #93C6E7;
-    --s: 50px;
-    --b: 50px;
-    --m: 2.5;
-    --R: calc(var(--s)*sqrt(var(--m)*var(--m) + 1) + var(--b)/2);
-    --_g: #0000 calc(99% - var(--b)), #F2F0EA calc(101% - var(--b)) 99%, #0000 101%;
-    mask: 
-      radial-gradient(var(--R) at left 50% bottom calc(-1*var(--m)*var(--s)), var(--_g)) 
-        calc(50% - 2*var(--s)) calc(50% - var(--s)/2 - var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x,
-      radial-gradient(var(--R) at left 50% top calc(-1*var(--m)*var(--s)), var(--_g)) 
-        50% calc(50% + var(--s)/2 + var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x;
-  }
+  // // 상단 웨이브 라인
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: -37px;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 75px;
+  //   opacity: 1;
+  //   transition: all 0.5s ease;
+  //   background: #93C6E7;
+  //   --s: 50px;
+  //   --b: 50px;
+  //   --m: 2.5;
+  //   --R: calc(var(--s)*sqrt(var(--m)*var(--m) + 1) + var(--b)/2);
+  //   --_g: #0000 calc(99% - var(--b)), #F2F0EA calc(101% - var(--b)) 99%, #0000 101%;
+  //   mask: 
+  //     radial-gradient(var(--R) at left 50% bottom calc(-1*var(--m)*var(--s)), var(--_g)) 
+  //       calc(50% - 2*var(--s)) calc(50% - var(--s)/2 - var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x,
+  //     radial-gradient(var(--R) at left 50% top calc(-1*var(--m)*var(--s)), var(--_g)) 
+  //       50% calc(50% + var(--s)/2 + var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x;
+  // }
 
   // 하단 웨이브 라인
   &::after {
@@ -127,7 +126,7 @@ const CategoryTitle = styled.div`
     left: 0;
     width: 100%;
     height: 75px;
-    opacity: ${props => props.isDropdownOpen ? 0 : 1};
+    opacity: 1;
     background: #93C6E7;
     --s: 50px;
     --b: 50px;

@@ -4,6 +4,33 @@ import styled from 'styled-components';
 import LogoImage from "../images/ViniaryLogo.png";
 import CircleImage from "../images/Circle.png";
 
+export const HeaderContainer = styled.div`
+  width: 100%;
+  height: 100px;
+  position: absolute; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.5rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  z-index: 2;
+  font-family: 'SSShinb7Regular', serif;
+  font-weight: bold;
+  ${props => props.isFixed && `
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; 
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: lightgray;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  `}
+`;
+
 const Header = ({ onDropdownChange, isFixed }) => {
   const [isWinesOpen, setIsWinesOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
@@ -73,33 +100,33 @@ const Header = ({ onDropdownChange, isFixed }) => {
 
 export default Header;
 
-const HeaderContainer = styled.div`
-  width: 100%;
-  height: 100px;
-  position: absolute; 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1.5rem;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  z-index: 2;
-  font-family: 'SSShinb7Regular', serif;
-  font-weight: bold;
-  background-color: rgba(242, 240, 234, 0.1);
-  ${props => props.isFixed && `
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -50px; 
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background-color: lightgray;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-  `}
-`;
+// const HeaderContainer = styled.div`
+//   width: 100%;
+//   height: 100px;
+//   position: absolute; 
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   font-size: 1.5rem;
+//   padding-top: 10px;
+//   padding-bottom: 10px;
+//   z-index: 2;
+//   font-family: 'SSShinb7Regular', serif;
+//   font-weight: bold;
+//   background-color: #F2F0EA; 
+//   ${props => props.isFixed && `
+//     &::after {
+//       content: '';
+//       position: absolute;
+//       bottom: -50px; 
+//       left: 0;
+//       width: 100%;
+//       height: 1px;
+//       background-color: lightgray;
+//       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+//     }
+//   `}
+// `;
 
 const HeaderImage = styled.img`
   width: 300px;

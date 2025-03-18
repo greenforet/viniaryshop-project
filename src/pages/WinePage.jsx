@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Header from "../components/Header"
+import Header, { HeaderContainer } from "../components/Header"
 import styled from 'styled-components';
 import WineSidebar from '../components/WineSidebar'
 import GridContainer from '../components/GridContainer';
@@ -214,6 +214,10 @@ const FixedHeader = styled.div`
   padding-bottom: 170px;
   z-index: 3;
   animation: slideDown 0.3s ease-in-out;
+
+  ${HeaderContainer}
+    background-color: rgba(242, 240, 234, 0.1);
+  }
 
   @keyframes slideDown {
     from {

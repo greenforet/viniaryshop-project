@@ -1,7 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { FaHeart, FaRegHeart } from 'react-icons/fa'; 
 
-const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, totalItems, onItemClick }) => {
+const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, totalItems, onItemClick, currentCategory }) => {
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem('wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  const toggleWishlist = (e, itemId) => {
+    e.stopPropagation();
+    setWishlist(prev => {
+      const wishlistItem = `${currentCategory}-${itemId}`;
+      if (prev.includes(wishlistItem)) {
+        return prev.filter(id => id !== wishlistItem);
+      } else {
+        return [...prev, wishlistItem];
+      }
+    });
+  };
+
+  const isItemWished = (itemId) => {
+    return wishlist.includes(`${currentCategory}-${itemId}`);
+  };
+
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const displayedItems = items.slice(startIndex, startIndex + itemsPerPage);
@@ -34,7 +60,15 @@ const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, total
                 onClick={() => onItemClick(item.id)} 
               />
             </ImageContainer>
-            <ItemName>{item.name}</ItemName>
+            <ItemInfoContainer>
+              <ItemName>{item.name}</ItemName>
+              <HeartIcon 
+                onClick={(e) => toggleWishlist(e, item.id)}
+                isWished={isItemWished(item.id)}
+              >
+                {isItemWished(item.id) ? <FaHeart /> : <FaRegHeart />}
+              </HeartIcon>
+            </ItemInfoContainer>
           </GridItem>
         ))}
       </Grid>
@@ -116,15 +150,34 @@ const ItemImage = styled.img`
   }
 `;
 
+const ItemInfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 220px;
+  gap: 10px;
+`;
+
 const ItemName = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
-  width: 220px; 
+  flex: 1;
   min-height: 40px;
   font-family: 'SSShinb7Regular', serif;
   word-wrap: break-word;
   line-height: 1.5;
+`;
+
+const HeartIcon = styled.div`
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: ${props => props.isWished ? '#ff6b6b' : '#666'};
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const Pagination = styled.div`
