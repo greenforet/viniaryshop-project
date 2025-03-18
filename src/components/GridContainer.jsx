@@ -4,29 +4,33 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 const GridContainer = ({ items, currentPage, setCurrentPage, itemsPerPage, totalItems, onItemClick, currentCategory }) => {
   const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('wishlist');
-    return saved ? JSON.parse(saved) : [];
+    const saved = localStorage.getItem('likedWines') || '[]'; // wishlist -> likedWines로 변경
+    return JSON.parse(saved);
   });
 
   useEffect(() => {
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('likedWines', JSON.stringify(wishlist)); // wishlist -> likedWines로 변경
+  }, [wishlist]);
+
+  useEffect(() => {
+    localStorage.setItem('likedWines', JSON.stringify(wishlist));
   }, [wishlist]);
 
   const toggleWishlist = (e, itemId) => {
     e.stopPropagation();
     setWishlist(prev => {
-      const wishlistItem = `${currentCategory}-${itemId}`;  // 카테고리와 ID를 조합
-      if (prev.includes(wishlistItem)) {
-        return prev.filter(id => id !== wishlistItem);
+      const wineKey = `${currentCategory}-${itemId}`;
+      if (prev.includes(wineKey)) {
+        return prev.filter(item => item !== wineKey);
       } else {
-        return [...prev, wishlistItem];
+        return [...prev, wineKey];
       }
     });
   };
 
   const isItemWished = (itemId) => {
-    const wishlistItem = `${currentCategory}-${itemId}`;  // 카테고리와 ID를 조합
-    return wishlist.includes(wishlistItem);
+    const wineKey = `${currentCategory}-${itemId}`;
+    return wishlist.includes(wineKey);
   };
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);

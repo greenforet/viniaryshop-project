@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import styled from 'styled-components';
 import DownArrowIcon from '../icons/DownArrowIcon.svg'
 
-const Footer = () => {
+const Footer = forwardRef((props, ref) => {
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   return (
-    <FooterContainer>
+    <FooterContainer ref={ref}>
     <FooterInfoContainer>
       <FooterList>
         <InfoList>개인정보보호정책</InfoList>
@@ -38,7 +38,7 @@ const Footer = () => {
     </FooterContentConatiner>
   </FooterContainer>
   );
-};
+});
 
 export default Footer;
 

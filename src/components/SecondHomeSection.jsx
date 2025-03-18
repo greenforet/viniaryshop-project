@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import WineDrowingImage from "../images/WineDrowingImage.png"
 import WineGlassImage from "../images/WineGlassImage.png"
@@ -11,7 +11,7 @@ import SecondHomeImage from "../images/SecondHomeImage.jpeg"
 import WineGlassHandImage from "../images/WineGlassHandImage.png"
 import { Wheel } from 'react-custom-roulette'; 
 
-const SecondHomeSection = () => {
+const SecondHomeSection = forwardRef((props, ref) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
 
@@ -33,7 +33,7 @@ const SecondHomeSection = () => {
   };
 
   return (
-    <MainSectionContainer>
+    <MainSectionContainer ref={ref}>
       <FirstMainSection>
       <LeftSection>
         <ImageContainer>
@@ -95,7 +95,7 @@ const SecondHomeSection = () => {
       </FirstMainSection>
     </MainSectionContainer>
   );
-};
+});
 
 export default SecondHomeSection;
 

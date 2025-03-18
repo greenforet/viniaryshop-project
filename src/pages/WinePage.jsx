@@ -253,7 +253,6 @@ const CategoryTitle = styled.div`
   transition: margin-top 0.5s ease;
   position: relative;
   
-
   &::before {
     content: '';
     position: absolute;
