@@ -17,8 +17,9 @@ const WinePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentCategory, setCurrentCategory] = useState('reds'); 
+  const [isFixedHeaderVisible, setIsFixedHeaderVisible] = useState(false);
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 30;
 
   useEffect(() => {
     const categoryFromState = location.state?.type;
@@ -73,7 +74,7 @@ useEffect(() => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const startPosition = 400; 
     const windowHeight = window.innerHeight;
-    const sidebarHeight = 750; 
+    const sidebarHeight = 780; 
     
     const maxScroll = Math.max(0, windowHeight - sidebarHeight);
     
@@ -88,16 +89,32 @@ useEffect(() => {
       startPosition + maxScroll, 
       Math.max(startPosition, newPosition)
     );
-    
+    console.log('new barPosition:', newPosition); 
     setBarPosition(newPosition);
   };
+
+    useEffect(() => {
+      window.addEventListener("scroll", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
+
+    useEffect(() => {
+      const handleScroll = () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const mainHeaderHeight = 130;
   
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+        if (scrollTop > mainHeaderHeight) {
+          setIsFixedHeaderVisible(true);
+        } else {
+          setIsFixedHeaderVisible(false);
+        }
+      };
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
 
   return (
     <Container ref={containerRef}>
@@ -116,6 +133,17 @@ useEffect(() => {
           </CategoryTitle>
         </ContentWrapper>
       </WineDetailedPageContainer>
+      {isFixedHeaderVisible && (
+        <FixedHeader>
+          <Header 
+            onMouseEnter={() => setIsDropdownOpen(true)}
+            onMouseLeave={() => setIsDropdownOpen(false)}
+            currentCategory={currentCategory}
+            setCurrentCategory={setCurrentCategory}
+            isFixed={true}
+          />
+        </FixedHeader>
+      )}
       <MainContent>
         <SideBarWrapper style={{ top: `${barPosition}px` }}>
           <WineSidebar 
@@ -129,7 +157,7 @@ useEffect(() => {
             items={wines}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            itemsPerPage={15}
+            itemsPerPage={30}
             totalItems={wines.length}
             onItemClick={handleWineClick}
           />
@@ -148,18 +176,18 @@ const Container = styled.div`
   background-color: #F2F0EA;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
   position: relative;
   display: flex;     
   flex-direction: column; 
+  overflow-y: visible;
 `;
 
 const WineDetailedPageContainer = styled.div`
   min-width: 1200px; 
   width: 100%;
-  position: fixed;
+  position: relative;
   top: 0;
-  z-index: 3;
+  z-index: 2;
   background-color: #F2F0EA;
 
   &::before {
@@ -176,11 +204,33 @@ const WineDetailedPageContainer = styled.div`
 }
 `;
 
+const FixedHeader = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 1200px;
+  background-color: rgba(242, 240, 234, 0.8);
+  padding-bottom: 170px;
+  z-index: 3;
+  animation: slideDown 0.3s ease-in-out;
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+`;
+
 const ContentWrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-top: 35px;
 `;
 
 const CategoryTitle = styled.div`
@@ -194,6 +244,7 @@ const CategoryTitle = styled.div`
   margin-top: ${props => props.isDropdownOpen ? '400px' : '130px'};
   transition: margin-top 0.5s ease;
   position: relative;
+  
 
   &::before {
     content: '';
@@ -215,7 +266,7 @@ const MainContent = styled.div`
   display: flex;
   position: relative;
   min-height: calc(100vh - 350px);
-  margin-top: 350px;
+  margin-top: 0;
   padding-bottom: 50px;
   width: 100%;
 `;
@@ -223,13 +274,14 @@ const MainContent = styled.div`
 const GridSection = styled.div`
   flex: 1;
   margin-left: 300px;  
+  margin-top: 100px;  
 `;
 
 const SideBarWrapper = styled.div`
   position: fixed;
   left: 50px;
   z-index: 1;
-  transform: translateY(-33%);
+  transform: translateY(-31%);
   transition: top 0.3s ease-out;
   height: fit-content;
 `;

@@ -45,7 +45,7 @@ export default Footer;
 const FooterContainer = styled.div`
   min-width: 1200px; 
   width: 100%;
-  height: 300px;
+  height: 400px;
   display: flex;
   position: relative;  
   margin-top: auto; 
@@ -58,13 +58,13 @@ const FooterInfoContainer = styled.div`
   align-items: center;
   padding-left: 100px;
   height: 200px;
+  font-size: 1.3rem;
 `;
 
 const FooterList = styled.div`
   display: flex;
-  padding-top: 50px;
+  padding-top: 70px;
   padding-bottom: 10px;
-  border-bottom: 1px solid black;
 `;
 
 const InfoList = styled.div`
@@ -75,7 +75,7 @@ const InfoList = styled.div`
 const FooterContentConatiner = styled.div`
   align-items: center;
   padding-right: 120px;
-  padding-top: 40px;
+  padding-top: 50px;
 `;
 
 const FooterCommuity = styled.div`

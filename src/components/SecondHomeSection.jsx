@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import WineDrowingImage from "../images/WineDrowingImage.png"
 import WineGlassImage from "../images/WineGlassImage.png"
-// import RedsFoodImage from "../images/RedsFood.png"
-// import WhitesFoodImage from "../images/WhitesFood.png"
-// import SparklingFoodImage from "../images/SparklingFood.png"
-// import RoseFoodImage from "../images/RoseFood.png"
-// import DessertFoodImage from "../images/DessertFood.png"
-// import PortFoodImage from "../images/PortFood.png"
+import WImage from "../images/W.png"
+import IImage from "../images/I.png"
+import NImage from "../images/N.png"
+import EImage from "../images/E.png"
+import SecondHomeDrowingImage from "../images/SecondHomeDrowing.png"
+import SecondHomeImage from "../images/SecondHomeImage.jpeg"
+import WineGlassHandImage from "../images/WineGlassHandImage.png"
 import { Wheel } from 'react-custom-roulette'; 
 
 const SecondHomeSection = () => {
@@ -23,39 +24,6 @@ const SecondHomeSection = () => {
     { option: 'port', style: { backgroundColor: '#FFF0F5', textColor: '#C1121F' } },
   ];
 
-// const wineImages = [
-//   { 
-//     src: RedsFoodImage, 
-//     name: "Red Wine Pairing",
-//     description: "Perfect with red meat, pasta with rich sauces, and aged cheeses" 
-//   },
-//   { 
-//     src: WhitesFoodImage, 
-//     name: "White Wine Pairing",
-//     description: "Ideal for seafood, light pasta dishes, and fresh cheeses" 
-//   },
-//   { 
-//     src: SparklingFoodImage, 
-//     name: "Sparkling Wine Pairing",
-//     description: "Great with appetizers, light seafood, and celebrations" 
-//   },
-//   { 
-//     src: RoseFoodImage, 
-//     name: "Rosé Wine Pairing",
-//     description: "Pairs well with Mediterranean cuisine and light summer dishes" 
-//   },
-//   { 
-//     src: DessertFoodImage, 
-//     name: "Dessert Wine Pairing",
-//     description: "Perfect complement to desserts, fruits, and blue cheeses" 
-//   },
-//   { 
-//     src: PortFoodImage, 
-//     name: "Port Wine Pairing",
-//     description: "Excellent with chocolate, aged cheeses, and nuts" 
-//   },
-// ];
-
   const handleSpinClick = () => {
     if (!mustSpin) {
       const newPrizeNumber = Math.floor(Math.random() * data.length);
@@ -67,20 +35,18 @@ const SecondHomeSection = () => {
   return (
     <MainSectionContainer>
       <FirstMainSection>
-      <LeftSection> 
-          <ImageContainer>
-            {/* <ImageGrid>
-            {wineImages.map((wine, index) => (
-              <ImageItem key={index} isEven={index % 2 === 0}>
-                <ImageWrapper>
-                  <WineImage src={wine.src} alt={wine.name} />
-                  <Tooltip>{wine.description}</Tooltip>
-                </ImageWrapper>
-                <WineName>{wine.name}</WineName>
-              </ImageItem>
-            ))}
-            </ImageGrid> */}
-          </ImageContainer>
+      <LeftSection>
+        <ImageContainer>
+          <FirstImage src={SecondHomeImage} alt="second-home-drowing" />
+          <SecondImage src={WineGlassHandImage} alt="wines-image" />
+          <ThirdImage src={SecondHomeDrowingImage}/>
+          {/* <LetterContainer>
+            <LetterWImage src={WImage} alt="w-image" />
+            <LetterIImage src={IImage} alt="i-image" />
+            <LetterNImage src={NImage} alt="n-image" />
+            <LetterEImage src={EImage} alt="e-image" />
+          </LetterContainer> */}
+        </ImageContainer>
       </LeftSection>
       <RightSection>
         <MainSlogan>
@@ -162,15 +128,10 @@ const MainSlogan = styled.div`
 const DrowingImage = styled.img`
   position: absolute; 
   left: 85%;          
-  transform: translateX(-15%) translateY(-90%) rotate(5deg);
-  width: 250px;       
+  transform: translateX(-10%) translateY(-100%) rotate(5deg);
+  width: 180px;       
   height: auto;
   z-index: 1;      
-`;
-
-const ImageContainer = styled.div`
-  position: relative;
-  z-index: 1;  
 `;
 
 const TitleText = styled.div`
@@ -226,22 +187,22 @@ const ImagePin = styled.img`
   position: absolute;
   top: -60px;
   left: 30%;
-  transform: translateX(-100%) translateY(30%) rotate(-35deg);
-  width: 150px;
+  transform: translateX(-130%) translateY(20%) rotate(-30deg);
+  width: 100px;
   height: auto;
   z-index: 999;
   transition: all 0.3s ease;
   
   &:hover {
-    transform: translateX(-100%) translateY(30%) rotate(-45deg) scale(1.5);
+    transform: translateX(-130%) translateY(20%) rotate(-40deg) scale(1.5);
   }
   animation: ${props => props.isSpinning ? pinWiggle : 'none'} 0.3s ease infinite;
 `;
 
 const pinWiggle = keyframes`
-  0% { transform: translateX(-100%) translateY(30%) rotate(-45deg); }
-  50% { transform: translateX(-100%) translateY(30%) rotate(5deg); }
-  100% { transform: translateX(-100%) translateY(30%) rotate(-45deg); }
+  0% { transform: translateX(-130%) translateY(20%) rotate(-45deg); }
+  50% { transform: translateX(-130%) translateY(20%) rotate(5deg); }
+  100% { transform: translateX(-130%) translateY(20%) rotate(-45deg); }
 `;
 
 const Description = styled.p`
@@ -253,92 +214,62 @@ const Description = styled.p`
   font-family: 'JacksonAmor', serif;
 `;
 
-// const ImageGrid = styled.div`
+const ImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-left: 100px;
+  padding-top: 50px;
+`;
+
+const FirstImage = styled.img`
+  width: 300px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 50% 20% / 10% 40%;
+  transform: translateX(100%) translateY(-10%);
+`;
+
+const SecondImage = styled.img`
+  width: 300px;
+  height: auto;
+  object-fit: contain;
+  transform: translateX(5%) translateY(-90%) rotate(-8deg);
+`;
+
+const ThirdImage = styled.img`
+  width: 450px;
+  height: auto;
+  object-fit: contain;
+  transform: translateX(5%) translateY(-50%) rotate(-5deg);
+`;
+
+// const LetterContainer = styled.div`
 //   display: flex;
-//   flex-direction: column;
-//   max-width: 450px;
-//   gap: 5px;
 // `;
-
-// const ImageItem = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   margin-left: ${props => props.isEven ? '0' : '540px'};
-//   margin-bottom: -120px;
-//   transition: transform 0.3s ease;
-//   position: relative; 
-//   top: ${props => props.isEven ? '-30px' : '-110px'}; 
-
-//   &:hover {
-//     transform: scale(1.2);
-//   &:hover {
-//     transform: scale(1.2);
-//     z-index: 8888;  // hover 시 다른 요소들보다 위에 오도록
-//   }
-//     cursor: pointer;
-//   }
-// `;
-
-// const WineName = styled.p`
-//   margin-top: 7px;
-//   color: black;
-//   font-size: 1.2rem;  
-//   font-family: 'JacksonAmor', serif;
-//   text-align: center;
-//   font-weight: bold;
-//   white-space: nowrap; 
-// `;
-
-// const Tooltip = styled.div`
-//   position: absolute;
-//   top: 10%;  // 위쪽으로 이동
-//   left: 95%;  // 오른쪽으로 이동
-//   transform: translateY(-20%);  // 약간 위로 조정
-//   background-color: rgba(147, 198, 231, 0.95);
-//   color: white;
-//   padding: 15px 20px;
-//   border-radius: 20px;  // 더 동그랗게
-//   font-size: 0.9rem;
-//   opacity: 0;
-//   visibility: hidden;
-//   transition: all 0.3s ease;
-//   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-//   z-index: 9999;
-//   width: max-content;
-//   max-width: 200px;
-//   text-align: center;
-//   font-family: 'JacksonAmor', serif;
-
-//   &::after {
-//     content: '';
-//     position: absolute;
-//     top: 20px;  // 화살표 위치 조정
-//     left: -10px;  // 왼쪽으로 이동
-//     border-width: 5px;
-//     border-style: solid;
-//     border-color: transparent rgba(147, 198, 231, 0.95) transparent transparent;  // 화살표 방향 변경
-//   }
-// `;
-
-// const ImageWrapper = styled.div`
-//   position: relative;
-//   cursor: pointer;
-
-//   &:hover ${Tooltip} {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateY(-20%) translateX(10px);
-//   }
-// `;
-
-// const WineImage = styled.img`
+// const LetterWImage = styled.img`
 //   width: 200px;
-//   height: 200px;
-//   object-fit: cover;
-//   transition: transform 0.3s ease;
+//   height: auto;
+//   object-fit: contain;
+//   transform: translateX(70%) translateY(-120%);
+// `;
 
-//   ${ImageWrapper}:hover & {
-//     transform: scale(1.05);
-//   }
+// const LetterIImage = styled.img`
+//   width: 150px;
+//   height: auto;
+//   object-fit: contain;
+//   transform: translateX(60%) translateY(-160%) rotate(-10deg); 
+// `;
+
+// const LetterNImage = styled.img`
+//   width: 150px;
+//   height: auto;
+//   object-fit: contain;
+//   transform: translateX(40%) translateY(-160%) rotate(-10deg);
+// `;
+
+// const LetterEImage = styled.img`
+//   width: 150px;
+//   height: auto;
+//   object-fit: contain;
+//   transform: translateX(20%) translateY(-200%);  // 60%로 감소
 // `;

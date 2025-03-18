@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import LogoImage from "../images/ViniaryLogo.png";
 import CircleImage from "../images/Circle.png";
 
-const Header = ({ onDropdownChange }) => {
+const Header = ({ onDropdownChange, isFixed }) => {
   const [isWinesOpen, setIsWinesOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Header = ({ onDropdownChange }) => {
   };
 
   return (
-    <HeaderContainer>
+    <HeaderContainer isFixed={isFixed}>
       <HeaderImage 
         src={LogoImage} 
         alt="logoimage" 
@@ -86,6 +86,19 @@ const HeaderContainer = styled.div`
   z-index: 2;
   font-family: 'SSShinb7Regular', serif;
   font-weight: bold;
+  background-color: rgba(242, 240, 234, 0.1);
+  ${props => props.isFixed && `
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; 
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: lightgray;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  `}
 `;
 
 const HeaderImage = styled.img`
