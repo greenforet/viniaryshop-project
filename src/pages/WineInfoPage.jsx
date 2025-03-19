@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header, { HeaderContainer } from "../components/Header"
+import Footer from "../components/Footer"
 import styled from 'styled-components';
 import { FaHeart, FaRegHeart } from 'react-icons/fa'; 
 import RhombusPatternImage from "../images/RhombusPattern.jpeg"
@@ -15,25 +16,27 @@ const WineInfoPage = () => {
   const [isFixedHeaderVisible, setIsFixedHeaderVisible] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [recommendedWines, setRecommendedWines] = useState([]);
+  const navigate = useNavigate();
 
+  // 추천 와인 가져오기
   useEffect(() => {
     const fetchRecommendedWines = async () => {
+      if (!currentCategory || !itemId) return;
+
       try {
         const response = await fetch(`https://api.sampleapis.com/wines/${currentCategory}`);
         if (!response.ok) throw new Error('Failed to fetch wines');
 
         const allWines = await response.json();
         const otherWines = allWines.filter(wine => Number(wine.id) !== Number(itemId));
-        const shuffled = otherWines.sort(() => 0.5 - Math.random());
+        const shuffled = [...otherWines].sort(() => 0.5 - Math.random());
         setRecommendedWines(shuffled.slice(0, 3));
       } catch (error) {
         console.error('Error fetching recommended wines:', error);
       }
     };
 
-    if (currentCategory && itemId) {
-      fetchRecommendedWines();
-    }
+    fetchRecommendedWines();
   }, [currentCategory, itemId]);
 
   useEffect(() => {
@@ -74,8 +77,14 @@ const WineInfoPage = () => {
     setIsDropdownOpen(isOpen);
   };
 
+  // 와인 정보 가져오기
   useEffect(() => {
     const fetchWineInfo = async () => {
+      if (!currentCategory || !itemId) return;
+      
+      setWineInfo(null);
+      setLoading(true);
+
       try {
         const response = await fetch(`https://api.sampleapis.com/wines/${currentCategory}`);
         if (!response.ok) throw new Error('Failed to fetch wines');
@@ -85,17 +94,27 @@ const WineInfoPage = () => {
         
         if (wine) {
           setWineInfo(wine);
-          setLoading(false);
-          return;
         }
-        setLoading(false);
       } catch (error) {
+        console.error('Error fetching wine info:', error);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchWineInfo();
-  }, [itemId, currentCategory]);
+  }, [currentCategory, itemId]);
+
+  const handleRecommendedWineClick = (wine) => {
+    window.scrollTo(0, 0);
+    navigate(`/wineinfopage/${wine.id}`, { 
+      state: { category: currentCategory }
+    });
+  };
+
+  if (!currentCategory) {
+    return <Navigate to="/" />;
+  }
 
   if (loading) return <LoadingMessage>Loading wine information...</LoadingMessage>;
   if (!wineInfo) return <ErrorMessage>Wine not found</ErrorMessage>;
@@ -151,12 +170,7 @@ const WineInfoPage = () => {
           {recommendedWines.map((wine) => (
             <RecommendedWineCard 
               key={wine.id}
-              onClick={() => {
-                window.scrollTo(0, 0);
-                Navigate(`/wine/${wine.id}`, { 
-                  state: { category: currentCategory } 
-                });
-              }}
+              onClick={() => handleRecommendedWineClick(wine)}
             >
               <RecommendedWineImage 
                 src={wine.image || 'default-wine-image.jpg'} 
@@ -167,6 +181,7 @@ const WineInfoPage = () => {
           ))}
         </RecommendedWinesContainer>
       </RecommendedSection>
+      <Footer/>
     </Container>
   );
 };
@@ -369,9 +384,9 @@ const RecommendedSection = styled.div`
 `;
 
 const RecommendedTitle = styled.h2`
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 100px;
-  margin-left: 50px;
+  margin-left: 100px;
   // text-align: center;
   font-family: 'JacksonAmor', serif;
   // border-bottom: 1px solid gray;
@@ -381,7 +396,8 @@ const RecommendedWinesContainer = styled.div`
   display: flex;
   justify-content: center;
   // gap: 150px;
-  margin-top: 30px;
+  padding: 30px;
+  padding-top: 50px;
 
 `;
 

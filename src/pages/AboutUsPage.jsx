@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import PartyPeopleImage from '../images/PartyPeople.png'
+import WineWithHumanImage from "../images/WineWithHuman.png"
 
 const AboutUsPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -42,8 +43,8 @@ const AboutUsPage = () => {
         </StyledParagraph>
       </MainContent>
       <LastContent>
-        <FirstBottomImage src = {PartyPeopleImage}></FirstBottomImage>
-        <SecondBottomImage>이미지2</SecondBottomImage>
+        {/* <FirstBottomImage src = {PartyPeopleImage}></FirstBottomImage> */}
+        <SecondBottomImage src = {WineWithHumanImage}></SecondBottomImage>
       </LastContent>
     </>
   );
@@ -178,7 +179,8 @@ const FirstBottomImage = styled.img`
   opacity: 0.8;
 `;
 
-const SecondBottomImage = styled.div`
-  bottom: 0;
-  background-color: gray;
+const SecondBottomImage = styled.img`
+  width: 450px; 
+  height: 400px;
+  opacity: 0.8;
 `;
