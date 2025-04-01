@@ -14,6 +14,15 @@ const WishListPage = () => {
   const navigate = useNavigate();
   const [selectedWines, setSelectedWines] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
+  const [showReservationPopup, setShowReservationPopup] = useState(false);
+  const [reservationForm, setReservationForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    date: '',
+    time: '',
+    message: ''
+  });
 
   const itemsPerPage = 8;
 
@@ -79,14 +88,6 @@ const WishListPage = () => {
   };
 
 
-  const handleOrderSelected = () => {
-    if (selectedWines.size === 0) {
-      alert('주문할 상품을 선택해주세요.');
-      return;
-    }
-    alert('선택한 상품 주문 처리');
-  };
-
   const handleDropdownChange = (isOpen) => {
     setIsDropdownOpen(isOpen);
   };
@@ -146,6 +147,39 @@ const WishListPage = () => {
   const totalPages = Math.ceil(wineDetails.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const displayedWines = wineDetails.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleOrderSelected = () => {
+    if (selectedWines.size === 0) {
+      alert('주문할 상품을 선택해주세요.');
+      return;
+    }
+    setShowReservationPopup(true);
+  };
+
+  const handleReservationSubmit = (e) => {
+    e.preventDefault();
+    setShowReservationPopup(false);
+    setReservationForm({
+      name: '',
+      phone: '',
+      email: '',
+      date: '',
+      time: '',
+      message: ''
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setReservationForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const getSelectedWineDetails = () => {
+    return wineDetails.filter(wine => selectedWines.has(wine.key));
+  };
 
   return (
     <Container>
@@ -225,6 +259,95 @@ const WishListPage = () => {
         </Pagination>
       )}
       <Footer/>
+
+      {showReservationPopup && (
+        <PopupOverlay>
+          <ReservationPopup>
+            <CloseButton onClick={() => setShowReservationPopup(false)}>×</CloseButton>
+            <PopupTitle>Reservation</PopupTitle>
+            <PopupContent>
+            <SelectedWinesSection>
+              <SelectedWinesTitle>선택된 상품</SelectedWinesTitle>
+              <SelectedWinesList>
+                {getSelectedWineDetails().map(wine => (
+                  <SelectedWineItem key={wine.key}>
+                    <SelectedWineImage 
+                      src={wine.image || 'default-wine-image.jpg'} 
+                      alt={wine.wine}
+                    />
+                    <SelectedWineInfo>
+                      <SelectedWineName>{wine.wine}</SelectedWineName>
+                      <SelectedWineWinery>{wine.winery}</SelectedWineWinery>
+                    </SelectedWineInfo>
+                  </SelectedWineItem>
+                ))}
+              </SelectedWinesList>
+            </SelectedWinesSection>
+            <ReservationForm onSubmit={handleReservationSubmit}>
+              <FormGroup>
+                <Label>이름</Label>
+                <Input
+                  type="text"
+                  name="name"
+                  value={reservationForm.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>전화번호</Label>
+                <Input
+                  type="tel"
+                  name="phone"
+                  value={reservationForm.phone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>이메일</Label>
+                <Input
+                  type="email"
+                  name="email"
+                  value={reservationForm.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>예약 날짜</Label>
+                <Input
+                  type="date"
+                  name="date"
+                  value={reservationForm.date}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>예약 시간</Label>
+                <Input
+                  type="time"
+                  name="time"
+                  value={reservationForm.time}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>메세지</Label>
+                <TextArea
+                  name="message"
+                  value={reservationForm.message}
+                  onChange={handleInputChange}
+                />
+              </FormGroup>
+              <SubmitButton type="submit">예약하기</SubmitButton>
+            </ReservationForm>
+            </PopupContent>
+          </ReservationPopup>
+        </PopupOverlay>
+      )}
     </Container>
   );
 };
@@ -286,9 +409,10 @@ const CategoryTitle = styled.div`
   `;
 
   const Container = styled.div`
-  background-color: #F2F0EA;
+  position: relative;
   min-height: 100vh;
-  
+  display: flex;
+  flex-direction: column;
 `;
 
 const WishListGrid = styled.div`
@@ -426,4 +550,178 @@ const SelectedCount = styled.div`
   color: #666;
   font-family: 'SSShinb7Regular', serif;
   font-size: 1.5rem;
+`;
+
+const PopupOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ReservationPopup = styled.div`
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  height: 600px; 
+  margin: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+`;
+
+const ReservationForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const Label = styled.label`
+  font-size: 0.9rem;
+  color: #333;
+`;
+
+const Input = styled.input`
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+`;
+
+const TextArea = styled.textarea`
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-height: 100px;
+  resize: vertical;
+`;
+
+const SubmitButton = styled.button`
+  background-color: #C1121F;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #A00F1A;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #C1121F;
+  padding: 5px 10px;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+const PopupTitle = styled.h2`
+  color: #C1121F;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: 'JacksonAmor', serif;
+  font-size: 2.5rem;
+`;
+
+const SelectedWinesSection = styled.div`
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+`;
+
+const SelectedWinesTitle = styled.h3`
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.1rem;
+`;
+
+const SelectedWinesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const SelectedWineItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+`;
+
+const SelectedWineImage = styled.img`
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 4px;
+`;
+
+const SelectedWineInfo = styled.div`
+  flex: 1;
+`;
+
+const SelectedWineName = styled.div`
+  font-weight: 500;
+  color: #333;
+`;
+
+const SelectedWineWinery = styled.div`
+  font-size: 0.9rem;
+  color: #666;
+`;
+
+const PopupContent = styled.div`
+  flex: 1;
+  overflow-y: auto; 
+  padding-right: 10px; 
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
