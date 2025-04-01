@@ -303,7 +303,7 @@ const WishListGrid = styled.div`
 
 const WineCard = styled.div`
   position: relative;
-  background: white;
+  // background: white;
   border-radius: 15px;
   padding: 20px;
   display: flex;

@@ -2,34 +2,81 @@ import React, { useState, forwardRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import WineDrowingImage from "../images/WineDrowingImage.png"
 import WineGlassImage from "../images/WineGlassImage.png"
-import WImage from "../images/W.png"
-import IImage from "../images/I.png"
-import NImage from "../images/N.png"
-import EImage from "../images/E.png"
+// import WImage from "../images/W.png"
+// import IImage from "../images/I.png"
+// import NImage from "../images/N.png"
+// import EImage from "../images/E.png"
 import SecondHomeDrowingImage from "../images/SecondHomeDrowing.png"
 import SecondHomeImage from "../images/SecondHomeImage.jpeg"
 import WineGlassHandImage from "../images/WineGlassHandImage.png"
 import { Wheel } from 'react-custom-roulette'; 
+import { useNavigate } from 'react-router-dom';
 
 const SecondHomeSection = forwardRef((props, ref) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
+  const [recommendedWines, setRecommendedWines] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  // 와인 데이터 가져오기
+  const fetchRecommendedWines = async (category) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`https://api.sampleapis.com/wines/${category}`);
+      if (!response.ok) throw new Error('Failed to fetch wines');
+      
+      const data = await response.json();
+      // 랜덤하게 3개 선택
+      const shuffled = data.sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 3);
+      setRecommendedWines(selected);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const data = [
-    { option: 'reds', style: { backgroundColor: '#FFE4E1', textColor: '#C1121F' } },
-    { option: 'whites', style: { backgroundColor: '#FFF0F5', textColor: '#C1121F' } },
-    { option: 'sparkling', style: { backgroundColor: '#FFE4E1', textColor: '#C1121F' } },
-    { option: 'rose', style: { backgroundColor: '#FFF0F5', textColor: '#C1121F' } },
-    { option: 'dessert', style: { backgroundColor: '#FFE4E1', textColor: '#C1121F' } },
     { option: 'port', style: { backgroundColor: '#FFF0F5', textColor: '#C1121F' } },
+    { option: 'dessert', style: { backgroundColor: '#FFE4E1', textColor: '#C1121F' } },
+    { option: 'reds', style: { backgroundColor: '#FFF0F5', textColor: '#C1121F' } },
+    { option: 'rose', style: { backgroundColor: '#FFE4E1', textColor: '#C1121F' } },
+    { option: 'sparkling', style: { backgroundColor: '#FFF0F5', textColor: '#C1121F' } },
+    { option: 'whites', style: { backgroundColor: '#FFE4E1', textColor: '#C1121F' } },
   ];
 
   const handleSpinClick = () => {
     if (!mustSpin) {
-      const newPrizeNumber = Math.floor(Math.random() * data.length);
-      setPrizeNumber(newPrizeNumber);
+      const randomNumber = Math.floor(Math.random() * data.length);
+      setPrizeNumber(randomNumber);
       setMustSpin(true);
     }
+  };
+  
+  const handleStopSpinning = () => {
+    setMustSpin(false);
+  
+    const selectedIndex = (prizeNumber + 6) % data.length;
+    const selectedCategory = data[selectedIndex].option;
+    console.log('Final selected category:', selectedCategory);
+    
+    fetchRecommendedWines(selectedCategory);
+    setShowPopup(true);
+  };
+
+  const handleWineClick = (wine) => {
+    navigate(`/wineinfopage/${wine.id}`, { 
+      state: { 
+        wineData: wine,
+        category: data[prizeNumber].option
+      }
+    });
+    setShowPopup(false);
   };
 
   return (
@@ -67,13 +114,17 @@ const SecondHomeSection = forwardRef((props, ref) => {
                 mustStartSpinning={mustSpin}
                 prizeNumber={prizeNumber}
                 data={data}
-                onStopSpinning={() => setMustSpin(false)}
+                onStopSpinning={handleStopSpinning}
                 pointerProps={{
-                  style: { display: 'none' }
+                  style: { 
+                    display: 'none',
+                    opacity: 0,
+                    pointerEvents: 'none'
+                  }
                 }}
                 backgroundColors={['#FFE4E1', '#FFF0F5']}
                 textColors={['#C1121F']}
-                outerBorderColor= "none"
+                outerBorderColor="none"
                 outerBorderWidth={3}
                 innerBorderColor="none"
                 innerBorderWidth={2}
@@ -84,6 +135,7 @@ const SecondHomeSection = forwardRef((props, ref) => {
                 textDistance={60}
                 spinDuration={0.8}
                 fontFamily={'SSShinb7Regular'}
+                spinDirection="clockwise"
               />
               </RouletteWrapper>
             <SpinButton onClick={handleSpinClick} disabled={mustSpin}>
@@ -93,6 +145,37 @@ const SecondHomeSection = forwardRef((props, ref) => {
         </MainSlogan>
         </RightSection>
       </FirstMainSection>
+      {showPopup && (
+        <PopupOverlay>
+        <PopupContent>
+          <CloseButton onClick={() => setShowPopup(false)}>×</CloseButton>
+          <PopupTitle>{data[prizeNumber].option} wine is recommended !!!</PopupTitle>
+            
+            {loading ? (
+              <LoadingText>와인 추천을 불러오는 중...</LoadingText>
+            ) : error ? (
+              <ErrorText>와인 정보를 불러오는데 실패했습니다.</ErrorText>
+            ) : (
+              <WineList>
+                {recommendedWines.map((wine, index) => (
+                  <WineItem 
+                    key={index}
+                    onClick={() => handleWineClick(wine)}
+                  >
+                    <WineImage 
+                      src={wine.image} 
+                      alt={wine.wine} 
+                    />
+                    <WineInfo>
+                      <WineName>{wine.wine}</WineName>
+                    </WineInfo>
+                  </WineItem>
+                ))}
+              </WineList>
+            )}
+          </PopupContent>
+        </PopupOverlay>
+      )}
     </MainSectionContainer>
   );
 });
@@ -108,6 +191,7 @@ const MainSectionContainer = styled.div`
   padding-top: 50px;
   padding-bottom: 30px;
   overflow: hidden;
+  position: relative;
 `;
 
 const FirstMainSection = styled.div`
@@ -273,3 +357,110 @@ const ThirdImage = styled.img`
 //   object-fit: contain;
 //   transform: translateX(20%) translateY(-200%);  // 60%로 감소
 // `;
+
+
+const PopupOverlay = styled.div`
+  position: absolute;  // fixed에서 absolute로 변경
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+`;
+
+const PopupContent = styled.div`
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  position: relative;
+  width: 90%;
+  max-width: 700px;
+  margin: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #C1121F;
+  padding: 5px 10px;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+const PopupTitle = styled.h2`
+  color: #C1121F;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: 'JacksonAmor', serif;
+  font-size: 2.5rem;
+`;
+
+const WineList = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const WineItem = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const WineImage = styled.img`
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  padding-top: 10px;
+`;
+
+const WineInfo = styled.div`
+  text-align: center;
+`;
+
+const WineName = styled.h3`
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #333;
+  font-family: 'SSShinb7Regular', serif;
+`;
+
+const LoadingText = styled.div`
+  text-align: center;
+  color: #C1121F;
+  font-size: 1.2rem;
+  padding: 20px;
+  font-family: 'SSShinb7Regular', serif;
+`;
+
+const ErrorText = styled.div`
+  text-align: center;
+  color: #C1121F;
+  font-size: 1.2rem;
+  padding: 20px;
+  font-family: 'SSShinb7Regular', serif;
+`;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
+import Footer from "../components/Footer"
 
 const ShopPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,6 +22,20 @@ const ShopPage = () => {
         </CategoryTitle>
       </ContentWrapper>
       </WineDetailedPageContainer>
+      <MainContent>
+        <MapContent/>
+        <InfoContent>
+          <NameContent>
+            <div>로고</div>
+            <div>주소</div>
+          </NameContent>
+          <NumberContent>
+            <div>번호</div>
+            <div>쉬는날</div>
+          </NumberContent>
+        </InfoContent>
+      </MainContent>
+      <Footer/>
     </>
   );
 };
@@ -80,3 +95,39 @@ const CategoryTitle = styled.div`
         50% calc(50% + var(--s)/2 + var(--b)/2)/calc(4*var(--s)) calc(var(--s) + var(--b)) repeat-x;
   }
   `;
+
+
+  const MainContent = styled.div`
+  width: 100%;
+  min-height: calc(100vh - 350px);
+  margin-top: 100px;
+  font-family: 'SSShinb7Regular', serif;
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;  
+`;
+
+const MapContent = styled.div`
+  height: 600px;
+  width: 700px;
+  background-color: white;
+  margin-top: 80px; 
+`;
+
+const InfoContent = styled.div`
+  margin-top: 80px;
+  margin-bottom: 150px;
+`;
+
+const NameContent = styled.div`
+  display: flex;
+  margin-bottom: 50px;
+  gap: 100px;
+`;
+
+const NumberContent = styled.div`
+  display: flex;
+  gap: 100px;
+`;

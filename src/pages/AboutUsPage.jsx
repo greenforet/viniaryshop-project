@@ -55,7 +55,7 @@ export default AboutUsPage;
 const WineDetailedPageContainer = styled.div`
   min-width: 1200px; 
   width: 100%;
-  position: fixed;
+  position: relative;
   top: 0;
   z-index: 3;
   background-color: #F2F0EA;
@@ -144,7 +144,7 @@ const CategoryTitle = styled.div`
 
 const MainContent = styled.div`
   width: 700px;
-  margin: 400px auto 0;
+  margin: 100px auto 0;
   font-family: 'SSShinb7Regular', serif;
   font-size: 1.5rem;
   display: flex;
