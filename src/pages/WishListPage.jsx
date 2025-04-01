@@ -23,6 +23,10 @@ const WishListPage = () => {
     time: '',
     message: ''
   });
+  const [errors, setErrors] = useState({
+    phone: '',
+    email: ''
+  });
 
   const itemsPerPage = 8;
 
@@ -156,8 +160,70 @@ const WishListPage = () => {
     setShowReservationPopup(true);
   };
 
+  const validatePhone = (phone) => {
+    const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setReservationForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (name === 'phone') {
+      if (!validatePhone(value)) {
+        setErrors(prev => ({
+          ...prev,
+          phone: '올바른 전화번호 형식이 아닙니다 (예: 010-1234-5678)'
+        }));
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          phone: ''
+        }));
+      }
+    }
+
+    if (name === 'email') {
+      if (!validateEmail(value)) {
+        setErrors(prev => ({
+          ...prev,
+          email: '올바른 이메일 형식이 아닙니다'
+        }));
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          email: ''
+        }));
+      }
+    }
+  };
+
   const handleReservationSubmit = (e) => {
     e.preventDefault();
+    
+    if (!validatePhone(reservationForm.phone)) {
+      setErrors(prev => ({
+        ...prev,
+        phone: '올바른 전화번호 형식이 아닙니다 (예: 010-1234-5678)'
+      }));
+      return;
+    }
+
+    if (!validateEmail(reservationForm.email)) {
+      setErrors(prev => ({
+        ...prev,
+        email: '올바른 이메일 형식이 아닙니다'
+      }));
+      return;
+    }
     setShowReservationPopup(false);
     setReservationForm({
       name: '',
@@ -167,14 +233,7 @@ const WishListPage = () => {
       time: '',
       message: ''
     });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setReservationForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setErrors({ phone: '', email: '' });
   };
 
   const getSelectedWineDetails = () => {
@@ -302,7 +361,9 @@ const WishListPage = () => {
                   value={reservationForm.phone}
                   onChange={handleInputChange}
                   required
+                  className={errors.phone ? 'error' : ''}
                 />
+                {errors.phone && <ErrorMessage>{errors.phone}</ErrorMessage>}
               </FormGroup>
               <FormGroup>
                 <Label>이메일</Label>
@@ -312,7 +373,9 @@ const WishListPage = () => {
                   value={reservationForm.email}
                   onChange={handleInputChange}
                   required
+                  className={errors.email ? 'error' : ''}
                 />
+                {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
               </FormGroup>
               <FormGroup>
                 <Label>예약 날짜</Label>
@@ -724,4 +787,10 @@ const PopupContent = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff0000;
+  font-size: 0.8rem;
+  margin-top: 4px;
 `;
