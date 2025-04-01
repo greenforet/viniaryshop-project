@@ -27,6 +27,7 @@ const WishListPage = () => {
     phone: '',
     email: ''
   });
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const itemsPerPage = 8;
 
@@ -160,6 +161,14 @@ const WishListPage = () => {
     setShowReservationPopup(true);
   };
 
+  const handleRemoveSelectedWine = (wineKey) => {
+    setSelectedWines(prev => {
+      const newSelected = new Set(prev);
+      newSelected.delete(wineKey);
+      return newSelected;
+    });
+  };
+
   const validatePhone = (phone) => {
     const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
     return phoneRegex.test(phone);
@@ -204,6 +213,34 @@ const WishListPage = () => {
         }));
       }
     }
+
+    if (name === 'date') {
+      if (!validateDate(value)) {
+        setErrors(prev => ({
+          ...prev,
+          date: '평일만 예약 가능합니다 (토,일 제외)'
+        }));
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          date: ''
+        }));
+      }
+    }
+
+    if (name === 'time') {
+      if (!validateTime(value)) {
+        setErrors(prev => ({
+          ...prev,
+          time: '영업시간 (09:30 - 18:00) 내에만 예약 가능합니다'
+        }));
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          time: ''
+        }));
+      }
+    }
   };
 
   const handleReservationSubmit = (e) => {
@@ -224,21 +261,61 @@ const WishListPage = () => {
       }));
       return;
     }
-    setShowReservationPopup(false);
-    setReservationForm({
-      name: '',
-      phone: '',
-      email: '',
-      date: '',
-      time: '',
-      message: ''
-    });
-    setErrors({ phone: '', email: '' });
+    setShowSuccessMessage(true);
+    
+    setTimeout(() => {
+      setShowReservationPopup(false);
+      setShowSuccessMessage(false);
+      setReservationForm({
+        name: '',
+        phone: '',
+        email: '',
+        date: '',
+        time: '',
+        message: ''
+      });
+      setErrors({ phone: '', email: '' });
+    }, 2000);
   };
 
   const getSelectedWineDetails = () => {
     return wineDetails.filter(wine => selectedWines.has(wine.key));
   };
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  const isWeekday = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDay();
+    return day !== 0 && day !== 6; 
+  };
+
+  const validateDate = (date) => {
+    if (!date) return false;
+    return isWeekday(date) && date >= getTodayDate();
+  };
+
+
+  const validateTime = (time) => {
+    if (!time) return false;
+    const [hours, minutes] = time.split(':').map(Number);
+    const timeValue = hours + minutes / 60;
+    return timeValue >= 9.5 && timeValue <= 18;
+  };
+
+  const timeOptions = [];
+  for (let hour = 9; hour <= 18; hour++) {
+    for (let minute = 0; minute < 60; minute += 10) {
+      if (hour === 9 && minute < 30) continue;
+      if (hour === 18 && minute > 0) continue;
+      
+      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      timeOptions.push(timeString);
+    }
+  }
 
   return (
     <Container>
@@ -325,6 +402,13 @@ const WishListPage = () => {
             <CloseButton onClick={() => setShowReservationPopup(false)}>×</CloseButton>
             <PopupTitle>Reservation</PopupTitle>
             <PopupContent>
+            {showSuccessMessage ? (
+              <SuccessMessage>
+                <SuccessIcon>✓</SuccessIcon>
+                <SuccessText>예약이 완료되었습니다</SuccessText>
+              </SuccessMessage>
+            ) : (
+              <>
             <SelectedWinesSection>
               <SelectedWinesTitle>선택된 상품</SelectedWinesTitle>
               <SelectedWinesList>
@@ -338,6 +422,9 @@ const WishListPage = () => {
                       <SelectedWineName>{wine.wine}</SelectedWineName>
                       <SelectedWineWinery>{wine.winery}</SelectedWineWinery>
                     </SelectedWineInfo>
+                    <DeleteButton onClick={() => handleRemoveSelectedWine(wine.key)}>
+                      <FaTimes />
+                    </DeleteButton>
                   </SelectedWineItem>
                 ))}
               </SelectedWinesList>
@@ -384,18 +471,29 @@ const WishListPage = () => {
                   name="date"
                   value={reservationForm.date}
                   onChange={handleInputChange}
+                  min={getTodayDate()}
                   required
+                  className={errors.date ? 'error' : ''}
                 />
+                {errors.date && <ErrorMessage>{errors.date}</ErrorMessage>}
               </FormGroup>
               <FormGroup>
                 <Label>예약 시간</Label>
-                <Input
-                  type="time"
+                <Select
                   name="time"
                   value={reservationForm.time}
                   onChange={handleInputChange}
                   required
-                />
+                  className={errors.time ? 'error' : ''}
+                >
+                  <option value="">시간 선택</option>
+                  {timeOptions.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </Select>
+                {errors.time && <ErrorMessage>{errors.time}</ErrorMessage>}
               </FormGroup>
               <FormGroup>
                 <Label>메세지</Label>
@@ -407,6 +505,8 @@ const WishListPage = () => {
               </FormGroup>
               <SubmitButton type="submit">예약하기</SubmitButton>
             </ReservationForm>
+            </>
+            )}
             </PopupContent>
           </ReservationPopup>
         </PopupOverlay>
@@ -742,6 +842,7 @@ const SelectedWineItem = styled.div`
   background-color: white;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative; // 삭제 버튼 위치 조정을 위해 추가
 `;
 
 const SelectedWineImage = styled.img`
@@ -793,4 +894,71 @@ const ErrorMessage = styled.div`
   color: #ff0000;
   font-size: 0.8rem;
   margin-top: 4px;
+`;
+
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #cc0000;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+const SuccessMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 20px;
+`;
+
+const SuccessIcon = styled.div`
+  width: 60px;
+  height: 60px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-bottom: 20px;
+`;
+
+const SuccessText = styled.div`
+  font-size: 24px;
+  color: #333;
+  font-weight: 500;
+`;
+
+const Select = styled.select`
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  
+  &.error {
+    border-color: #ff0000;
+  }
 `;
