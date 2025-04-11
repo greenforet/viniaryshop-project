@@ -263,20 +263,30 @@ const WishListPage = () => {
     }
     setShowSuccessMessage(true);
     
-    setTimeout(() => {
-      setShowReservationPopup(false);
-      setShowSuccessMessage(false);
-      setReservationForm({
-        name: '',
-        phone: '',
-        email: '',
-        date: '',
-        time: '',
-        message: ''
-      });
-      setErrors({ phone: '', email: '' });
-    }, 2000);
-  };
+  setTimeout(() => {
+    const updatedLikedWines = likedWines.filter(key => !selectedWines.has(key));
+    localStorage.setItem('likedWines', JSON.stringify(updatedLikedWines));
+    setLikedWines(updatedLikedWines);
+    
+    const updatedWineDetails = wineDetails.filter(wine => !selectedWines.has(wine.key));
+    setWineDetails(updatedWineDetails);
+    adjustCurrentPage(updatedWineDetails.length);
+
+    setShowReservationPopup(false);
+    setShowSuccessMessage(false);
+    setSelectedWines(new Set());
+    setReservationForm({
+      name: '',
+      phone: '',
+      email: '',
+      date: '',
+      time: '',
+      message: ''
+    });
+    setErrors({ phone: '', email: '' });
+  }, 2000);
+};
+
 
   const getSelectedWineDetails = () => {
     return wineDetails.filter(wine => selectedWines.has(wine.key));
@@ -580,8 +590,8 @@ const CategoryTitle = styled.div`
 
 const WishListGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 50px;
   padding: 50px;
   max-width: 1400px;
   margin: 0 auto;
