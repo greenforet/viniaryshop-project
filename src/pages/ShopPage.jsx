@@ -1,38 +1,70 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import Footer from "../components/Footer"
+import LogoImage from "../images/ViniaryLogo.png";
 
 const ShopPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  useEffect(() => {
+    const mapScript = document.createElement('script');
+    mapScript.async = true;
+    mapScript.type = 'text/javascript';
+    mapScript.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=64e10d860e4583d7e4707cb726ebd4e6&autoload=false`;
+
+    const onLoadKakaoMap = () => {
+      window.kakao.maps.load(() => {
+        const container = document.getElementById('map');
+        const options = {
+          center: new window.kakao.maps.LatLng(37.544315471395926, 127.03762171624724),
+          level: 3
+        };
+        const map = new window.kakao.maps.Map(container, options);
+
+        const markerPosition = new window.kakao.maps.LatLng(37.544315471395926, 127.03762171624724);
+        const marker = new window.kakao.maps.Marker({
+          position: markerPosition
+        });
+        marker.setMap(map);
+      });
+    };
+
+    mapScript.addEventListener('load', onLoadKakaoMap);
+
+    document.head.appendChild(mapScript);
+
+    return () => {
+      mapScript.removeEventListener('load', onLoadKakaoMap);
+      if (mapScript.parentNode) {
+        mapScript.parentNode.removeChild(mapScript);
+      }
+    };
+  }, []);
+
   const handleDropdownChange = (isOpen) => {
     setIsDropdownOpen(isOpen);
   };
+
   return (
     <>
-      <WineDetailedPageContainer isDropdownOpen={isDropdownOpen}>
-      <Header 
+      <WineDetailedPageContainer $isDropdownOpen={isDropdownOpen}>
+        <Header 
           onDropdownChange={handleDropdownChange} 
         />
-      <ContentWrapper>
-        <CategoryTitle 
-          isDropdownOpen={isDropdownOpen}>
-          Shop
-        </CategoryTitle>
-      </ContentWrapper>
+        <ContentWrapper>
+          <CategoryTitle 
+            $isDropdownOpen={isDropdownOpen}>
+            Shop
+          </CategoryTitle>
+        </ContentWrapper>
       </WineDetailedPageContainer>
       <MainContent>
-        <MapContent/>
+        <MapContent id="map" />
         <InfoContent>
-          <NameContent>
-            <div>로고</div>
-            <div>주소</div>
-          </NameContent>
-          <NumberContent>
-            <div>번호</div>
-            <div>쉬는날</div>
-          </NumberContent>
+          <NameContent
+            src={LogoImage} 
+            alt="logoimage" />
         </InfoContent>
       </MainContent>
       <Footer/>
@@ -65,9 +97,9 @@ const CategoryTitle = styled.div`
   flex-direction: column;
   align-items: center;
   padding-bottom: 20px;
-  padding-top: ${props => props.isDropdownOpen ? '50px' : '30px'};
+  padding-top: ${props => props.$isDropdownOpen ? '50px' : '30px'};
   font-family: 'JacksonAmor', serif;
-  margin-top: ${props => props.isDropdownOpen ? '400px' : '130px'};
+  margin-top: ${props => props.$isDropdownOpen ? '400px' : '130px'};
   transition: all 0.5s ease;
   position: relative;
   background: #93C6E7;
@@ -113,21 +145,19 @@ const MapContent = styled.div`
   height: 600px;
   width: 700px;
   background-color: white;
-  margin-top: 80px; 
+  margin-top: 80px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const InfoContent = styled.div`
-  margin-top: 80px;
-  margin-bottom: 150px;
-`;
-
-const NameContent = styled.div`
-  display: flex;
+  margin-top: 50px;
   margin-bottom: 50px;
-  gap: 100px;
 `;
 
-const NumberContent = styled.div`
-  display: flex;
-  gap: 100px;
+const NameContent = styled.img`
+  width: 400px;
+  padding-top: 10px;
 `;
